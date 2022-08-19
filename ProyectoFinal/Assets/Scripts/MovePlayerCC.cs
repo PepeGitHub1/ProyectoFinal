@@ -11,16 +11,35 @@ public class MovePlayerCC : MonoBehaviour
     private float gravity = -9.81f;
     private Vector3 velocity;
 
-    public float jumpForce =10f;
+    private Transform groundCheck;
+    public float groundDistance = 0.2f;
+    public bool isGrounded = true;
+    private LayerMask Ground;
+
+    public float JumpHeight = 10f;
     // Start is called before the first frame update
     void Start()
     {
-        playerCC = GetComponent<CharacterController>(); 
+        playerCC = GetComponent<CharacterController>();
+        groundCheck = transform.GetChild(0);
     }
 
     // Update is called once per frame
     void Update()
     {
+        //------------------gravedad--------------
+        velocity.y += gravity * Time.deltaTime;
+        playerCC.Move(velocity * Time.deltaTime);
+
+        //------------------Crear metodo is grounded y reiniciar variable velocity----------
+
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, Ground, QueryTriggerInteraction.Ignore);
+
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = 0f;
+        }
+
 
         //--------------movimiento----------------
         Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
@@ -31,20 +50,15 @@ public class MovePlayerCC : MonoBehaviour
             transform.forward = direction;
         }
 
-        //------------------gravedad--------------
-        velocity.y += gravity * Time.deltaTime;
-        playerCC.Move(velocity * Time.deltaTime);
 
-        if(playerCC.isGrounded)
-        {
-            velocity.y = 0f;
-        }
+
+
 
         //-----------------salto-----------------
 
-        if(Input.GetButtonDown("Jump") && playerCC.isGrounded)
+        if(Input.GetButtonDown("Jump") && isGrounded)
         {
-            velocity.y += jumpForce;
+            velocity.y += Mathf.Sqrt(JumpHeight * -2f * gravity);
         }
     }
 }
