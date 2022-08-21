@@ -13,21 +13,24 @@ public class MovePlayerForce : MonoBehaviour
 
     private Rigidbody playerRB;
 
-    [SerializeField][Range(1f, 10f)] private float rayDistance = 5f;
-    public Transform endPoint;
-    public bool ground = true;
+    private float distanceToGround;
+
+
+
 
 
     void Start()
     {
         playerRB = GetComponent<Rigidbody>();
+        distanceToGround = GetComponent<Collider>().bounds.extents.y;
+
     }
 
 
     void Update()
     {
         Jump();
-        IsGrounded();
+
 
     }
 
@@ -42,7 +45,7 @@ public class MovePlayerForce : MonoBehaviour
 
     private void Jump()
     {
-        if (Input.GetButtonDown("Jump") && ground)
+        if (Input.GetButtonDown("Jump") && IsGrounded())
         {
             Debug.Log("Estoy saltando");
             playerRB.AddForce(Vector3.up * forceJump, ForceMode.Impulse);
@@ -50,31 +53,8 @@ public class MovePlayerForce : MonoBehaviour
 
         }
     }
-
-    private void IsGrounded()
+    private bool IsGrounded()
     {
-
-        RaycastHit hit;
-
-        if (Physics.Raycast(transform.position, endPoint.position, out hit, rayDistance))
-        {
-            if (hit.transform.CompareTag("Ground"))
-            {
-                Debug.Log("Tocando piso");
-                ground = true;
-            }
-            else
-            {
-                ground = false;
-            }
-        }
-
+        return Physics.BoxCast(transform.position, new Vector3(0.4f,0f,0.4f), Vector3.down,Quaternion.identity,distanceToGround + 0.5f);
     }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, endPoint.position);
-    }
-
 }
