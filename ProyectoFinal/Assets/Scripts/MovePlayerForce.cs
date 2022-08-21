@@ -13,21 +13,21 @@ public class MovePlayerForce : MonoBehaviour
 
     private Rigidbody playerRB;
 
+    [SerializeField][Range(1f, 10f)] private float rayDistance = 5f;
+    public Transform endPoint;
+    public bool ground = true;
 
-    private void Awake()
-    {
-        playerRB = GetComponent<Rigidbody>();
 
-    }
     void Start()
     {
-
+        playerRB = GetComponent<Rigidbody>();
     }
 
 
     void Update()
     {
         Jump();
+        IsGrounded();
 
     }
 
@@ -42,13 +42,39 @@ public class MovePlayerForce : MonoBehaviour
 
     private void Jump()
     {
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && ground)
         {
             Debug.Log("Estoy saltando");
             playerRB.AddForce(Vector3.up * forceJump, ForceMode.Impulse);
 
 
         }
+    }
+
+    private void IsGrounded()
+    {
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, endPoint.position, out hit, rayDistance))
+        {
+            if (hit.transform.CompareTag("Ground"))
+            {
+                Debug.Log("Tocando piso");
+                ground = true;
+            }
+            else
+            {
+                ground = false;
+            }
+        }
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(transform.position, endPoint.position);
     }
 
 }
