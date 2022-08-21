@@ -4,36 +4,51 @@ using UnityEngine;
 
 public class MovePlayerForce : MonoBehaviour
 {
-    [SerializeField]
-    [Range(5f, 2000f)] private float speed = 5f;
-    [SerializeField]
-    [Range(5f, 2000f)] private float maxSpeed = 5f;
+    [SerializeField][Range(5f, 2000f)] private float speed = 5f;
+    [SerializeField][Range(5f, 2000f)] private float forceJump = 10f;
 
-    private Vector3 inputs = Vector3.zero;
-
+    // [SerializeField]
+    // [Range(5f, 2000f)] private float maxSpeed = 5f;
+    private Vector3 direction;
 
     private Rigidbody playerRB;
-    // Start is called before the first frame update
-    void Start()
+
+
+    private void Awake()
     {
         playerRB = GetComponent<Rigidbody>();
+
+    }
+    void Start()
+    {
+
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-       // inputs = Vector3.zero;
-        inputs.x = Input.GetAxis("Horizontal");
-        inputs.z = Input.GetAxis("Vertical");
+        Jump();
 
     }
 
     private void FixedUpdate()
     {
-        if()
-        playerRB.AddForce(inputs * speed, ForceMode.Force);
+        direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+
+
+        playerRB.AddForce(direction * speed, ForceMode.Impulse);
+
     }
 
+    private void Jump()
+    {
+        if (Input.GetButtonDown("Jump"))
+        {
+            Debug.Log("Estoy saltando");
+            playerRB.AddForce(Vector3.up * forceJump, ForceMode.Impulse);
 
+
+        }
+    }
 
 }
