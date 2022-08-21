@@ -29,11 +29,12 @@ public class MovePlayerForce : MonoBehaviour
 
     void Update()
     {
-        Jump();
 
+        Jump();
 
     }
 
+    //-----------------------------Movimiento------------------------------------------
     private void FixedUpdate()
     {
         direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
@@ -41,8 +42,10 @@ public class MovePlayerForce : MonoBehaviour
 
         playerRB.AddForce(direction * speed, ForceMode.Impulse);
 
-    }
 
+
+    }
+    //----------------------------Salto--------------------------------------------------
     private void Jump()
     {
         if (Input.GetButtonDown("Jump") && IsGrounded())
@@ -53,8 +56,9 @@ public class MovePlayerForce : MonoBehaviour
 
         }
     }
+    //---------------------------------------DeteccionSuelo-----------------------------------
     private bool IsGrounded()
     {
-        return Physics.BoxCast(transform.position, new Vector3(0.4f,0f,0.4f), Vector3.down,Quaternion.identity,distanceToGround + 0.5f);
+        return Physics.BoxCast(transform.position, new Vector3(0.4f, 0f, 0.4f), Vector3.down, Quaternion.identity, distanceToGround + 0.5f);
     }
 }
