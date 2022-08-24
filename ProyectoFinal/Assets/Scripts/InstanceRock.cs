@@ -4,21 +4,25 @@ using UnityEngine;
 
 public class InstanceRock : MonoBehaviour
 {
-    [SerializeField]private GameObject rockIntantiate;
+    [SerializeField] private GameObject rockIntantiate;
+    private float spawnLimitX = 10f;
+    private float spawnLimitZ = 20f;
+    private float spawnPos;
+
     // Start is called before the first frame update
     void Start()
     {
-        Invoke("RockIntantiate",2f);
+        InvokeRepeating("RockIntantiate", 2f, 0.5f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void RockIntantiate()
     {
-        Instantiate(rockIntantiate,new Vector3(0,0,20),transform.rotation);
+        Instantiate(rockIntantiate, new Vector3(Random.Range(-spawnLimitX, spawnLimitX), 2f, spawnLimitZ), transform.rotation);
     }
 }
